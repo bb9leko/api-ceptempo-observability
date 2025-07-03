@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+
+  api-cep-tempo:
+    build:
+      context: ./api-cep-tempo
+      dockerfile: Dockerfile
+    environment:
+      - WEATHERAPI_KEY=9bb7a9b73c0a4f88b3c154443252906
+      - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
+      - PORT=8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - zipkin
+
+  api-ceptempo-consumer:
+    build:
+      context: ./api-ceptempo-consumer
+      dockerfile: Dockerfile
+    environment:
+      - API_CEP_TEMPO_URL=http://api-cep-tempo:8080/cep
+      - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
+      - PORT=8081
+    ports:
+      - "8081:8081"
+    depends_on:
+      - api-cep-tempo
+      - zipkin

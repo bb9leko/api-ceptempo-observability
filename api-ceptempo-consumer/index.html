@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta CEP</title>
+</head>
+<body>
+    <h1>Consultar CEP</h1>
+    <form id="cepForm">
+        <label for="cep">CEP:</label>
+        <input type="text" id="cep" name="cep" maxlength="8" required>
+        <button type="submit">Consultar</button>
+    </form>
+    <pre id="resultado"></pre>
+
+    <script>
+        document.getElementById('cepForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const cep = document.getElementById('cep').value;
+            const resposta = await fetch('/consulta', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cep })
+            });
+            let texto = `Código HTTP: ${resposta.status}\n`;
+            try {
+                const resultado = await resposta.json();
+                texto += "Response Body: " + JSON.stringify(resultado, null, 2);
+            } catch {
+                texto += "Response Body: (resposta vazia ou inválida)";
+            }
+            document.getElementById('resultado').textContent = texto;
+        });
+    </script>
+</body>
+</html>

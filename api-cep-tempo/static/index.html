@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta CEP e Tempo</title>
+    <style>
+        #info, #resultado {
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Consultar CEP e Temperatura</h1>
+    <form id="cepForm">
+        <label for="cep">CEP:</label>
+        <input type="text" id="cep" name="cep" maxlength="8" required>
+        <button type="submit">Consultar</button>
+    </form>
+    <div id="info"></div>
+    <pre id="resultado"></pre>
+    <script>
+        document.getElementById('cepForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const cep = document.getElementById('cep').value;
+            const res = await fetch(`/cep?cep=${cep}`);
+            const status = res.status;
+            const data = await res.json();
+
+            // Cidade (localidade) pode estar no body se sucesso
+            let cidade = data.localidade || "";
+            let body;
+            if (status === 200) {
+                // Remove cep e localidade do body de resposta
+                body = {
+                    temp_C: data.temp_C,
+                    temp_F: data.temp_F,
+                    temp_K: data.temp_K
+                };
+            } else {
+                body = { error: data.error };
+            }
+
+            document.getElementById('info').innerHTML = `
+                <strong>Cidade:</strong> ${cidade}<br>
+                <strong>Código HTTP:</strong> ${status}
+            `;
+            document.getElementById('resultado').textContent = JSON.stringify(body, null, 2);
+        });
+    </script>
+</body>
+</html>
