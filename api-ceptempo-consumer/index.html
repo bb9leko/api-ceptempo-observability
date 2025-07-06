@@ -17,7 +17,7 @@
         document.getElementById('cepForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const cep = document.getElementById('cep').value;
-            const resposta = await fetch('/consulta', {
+            const resposta = await fetch('/cep', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ cep })

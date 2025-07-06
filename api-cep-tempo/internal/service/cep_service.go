@@ -8,7 +8,6 @@ import (
 	"github.com/bb9leko/api-cep-tempo/internal/model"
 )
 
-// ServiceError representa um erro customizado com código HTTP e mensagem
 type ServiceError struct {
 	Code    int
 	Message string
@@ -29,22 +28,17 @@ func GetCEPAndTempoInfo(cep string) (*model.CEPTempoResponse, error) {
 	}
 	data, err := client.FetchCEP(cep)
 	if err != nil {
-		return nil, &ServiceError{Code: 500, Message: "internal error"}
-	}
-	if data.Erro {
 		return nil, &ServiceError{Code: 404, Message: "can not find zipcode"}
 	}
 
-	// Consulta a WeatherAPI usando a localidade retornada
 	tempC, err := client.FetchTemperatura(data.Localidade)
 	if err != nil {
 		return nil, err
 	}
 
-	tempF := tempC*1.8 + 32 // Fahrenheit
-	tempK := tempC + 273    // Kelvin (conforme solicitado, sem casas decimais)
+	tempF := tempC*1.8 + 32
+	tempK := tempC + 273
 
-	// Arredonda para 1 casa decimal
 	tempC = math.Round(tempC*10) / 10
 	tempF = math.Round(tempF*10) / 10
 	tempK = math.Round(tempK*10) / 10

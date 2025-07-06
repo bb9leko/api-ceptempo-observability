@@ -11,7 +11,7 @@ services:
       context: ./api-cep-tempo
       dockerfile: Dockerfile
     environment:
-      - WEATHERAPI_KEY=9bb7a9b73c0a4f88b3c154443252906
+      - WEATHERAPI_KEY=${WEATHERAPI_KEY}
       - ZIPKIN_URL=http://zipkin:9411/api/v2/spans
       - PORT=8080
     ports:

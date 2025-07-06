@@ -12,7 +12,6 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
-// Inicializa o tracer do OpenTelemetry com Zipkin
 func initTracer() func() {
 	exporter, err := zipkin.New(os.Getenv("ZIPKIN_URL"))
 	if err != nil {
@@ -29,8 +28,8 @@ func main() {
 	shutdown := initTracer()
 	defer shutdown()
 
-	http.Handle("/consulta", otelhttp.NewHandler(http.HandlerFunc(ConsultaCepHandler), "ConsultaCepHandler"))
-	http.Handle("/", http.FileServer(http.Dir("."))) // Serve arquivos estáticos do diretório atual
+	http.Handle("/cep", otelhttp.NewHandler(http.HandlerFunc(ConsultaCepHandler), "ConsultaCepHandler"))
+	http.Handle("/", http.FileServer(http.Dir(".")))
 	log.Println("api-ceptempo-consumer rodando na porta 8081")
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }

@@ -18,14 +18,12 @@ type weatherAPIResponse struct {
 	} `json:"current"`
 }
 
-// Remove acentos, transforma em maiúscula e substitui espaços por '+'
 func sanitizeCity(city string) string {
-	// Normaliza para decompor caracteres acentuados
 	normCity := norm.NFD.String(city)
 	t := make([]rune, 0, len(normCity))
 	for _, r := range normCity {
 		if unicode.Is(unicode.Mn, r) {
-			continue // Remove marcas de acento
+			continue
 		}
 		t = append(t, unicode.ToUpper(r))
 	}

@@ -27,7 +27,7 @@ func initTracer() func() {
 }
 
 func main() {
-	shutdown := initTracer() // PASSO 1
+	shutdown := initTracer()
 	defer shutdown()
 
 	apiKey := os.Getenv("WEATHERAPI_KEY")
@@ -44,7 +44,6 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 
-	// PASSO 2: Instrumenta o handler do endpoint /cep
 	http.Handle("/cep", otelhttp.NewHandler(http.HandlerFunc(handler.CEPHandler), "CEPHandler"))
 
 	port := os.Getenv("PORT")
